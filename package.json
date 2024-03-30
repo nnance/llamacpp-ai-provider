@@ -1,0 +1,30 @@
+{
+  "name": "vercel-ai-llamacpp",
+  "version": "0.0.1",
+  "description": "Vercel AI Provider for running LLMs locally using LLamaCpp",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [
+    "llm",
+    "genai",
+    "vercel-ai"
+  ],
+  "author": "Nick Nance",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.12.2",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "node-llama-cpp": "^2.8.9"
+  },
+  "peerDependencies": {
+    "ai": "^3.0.16"
+  }
+}

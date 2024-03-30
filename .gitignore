@@ -53,3 +53,6 @@ dist
 
 # Serverless directories
 .serverless/
+
+# model files
+/models
