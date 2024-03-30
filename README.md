@@ -1,4 +1,4 @@
-# vercel-ai-llamacpp
+# llamacpp-ai-provider
 
 Vercel AI Provider for running Large Language Models locally using LLamaCpp without a server
 
