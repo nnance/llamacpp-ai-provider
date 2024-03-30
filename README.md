@@ -20,7 +20,7 @@ This project is under active construction and current depends on the node-llama-
 ## Installation
 
 ```bash
-npm install --save ai vercel-ai-llamacpp
+npm install --save ai llamacpp-ai-provider
 ```
 
 The example below expects the llama-2 model file installed in the `models` folder in the project root folder. You can download a GGUF compatible file from [Hugging Face](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/tree/main).
@@ -33,7 +33,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 
 import { ExperimentalMessage, experimental_streamText } from "ai";
-import { LLamaCpp } from "vercel-ai-llamacpp";
+import { LLamaCpp } from "llamacpp-ai-provider";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const modelPath = path.join(
@@ -80,4 +80,4 @@ async function main() {
 main().catch(console.error);
 ```
 
-> For more examples, see the [getting started guide](https://nnance.github.io/vercel-ai-llamacpp/guide/)
+> For more examples, see the [getting started guide](https://nnance.github.io/llamacpp-ai-provider/guide/)
