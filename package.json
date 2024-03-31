@@ -29,5 +29,8 @@
   },
   "peerDependencies": {
     "ai": "^3.0.16"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
