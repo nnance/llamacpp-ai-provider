@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "prepublish": "tsc",
     "pretest": "tsc",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest ./dist/**/*.test.js"
   },
@@ -29,5 +30,8 @@
   },
   "peerDependencies": {
     "ai": "^3.0.16"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
