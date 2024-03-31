@@ -4,14 +4,18 @@ import {
   LanguageModelV1CallWarning,
   LanguageModelV1FinishReason,
   LanguageModelV1FunctionToolCall,
+  LanguageModelV1ImagePart,
   LanguageModelV1Prompt,
   LanguageModelV1StreamPart,
   LanguageModelV1TextPart,
+  LanguageModelV1ToolCallPart,
+  LanguageModelV1ToolResultPart,
 } from "ai/spec";
 import { Message } from "ai";
 
 import { experimental_buildLlama2Prompt } from "ai/prompts";
 
+// TODO: Use dependency injection to avoid importing from node-llama-cpp to make testing easier
 import {
   LlamaChatSession,
   LlamaContext,
@@ -23,17 +27,35 @@ function isString(x: any): x is string {
   return typeof x === "string";
 }
 
-function convertLanguageModelPromptToMessages(
+function getStringContent(
+  content:
+    | string
+    | (LanguageModelV1TextPart | LanguageModelV1ImagePart)[]
+    | (LanguageModelV1TextPart | LanguageModelV1ToolCallPart)[]
+    | LanguageModelV1ToolResultPart[]
+): string {
+  if (isString(content)) {
+    return content;
+  } else if (Array.isArray(content) && content.length > 0) {
+    const first = content[0];
+    return first.type === "text"
+      ? first.text
+      : first.type === "tool-call"
+        ? first.toolName
+        : "image";
+  } else {
+    return "";
+  }
+}
+
+// TODO: Update tests so this can become private again
+export function convertLanguageModelPromptToMessages(
   prompt: LanguageModelV1Prompt
 ): Message[] {
   return prompt.map(({ role, content }, id) => ({
     id: id.toString(),
     role,
-    content: isString(content)
-      ? content
-      : content[0].type === "text"
-        ? (content[0] as LanguageModelV1TextPart).text
-        : "",
+    content: getStringContent(content),
   }));
 }
 
@@ -42,7 +64,7 @@ export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
   readonly provider = "llamacpp";
   modelId: string;
   modelPath: string;
-  session?: LlamaChatSession;
+  private session?: LlamaChatSession;
   defaultObjectGenerationMode: "json" | "tool" | "grammar" | undefined;
 
   constructor(
