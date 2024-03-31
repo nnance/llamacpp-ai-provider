@@ -7,6 +7,7 @@
     "build": "tsc",
     "prepublish": "tsc",
     "pretest": "tsc",
+    "postversion": "git push && git push --tags",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest ./dist/**/*.test.js"
   },
   "type": "module",
