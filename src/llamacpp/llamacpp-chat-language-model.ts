@@ -14,14 +14,7 @@ import {
 import { Message } from "ai";
 
 import { experimental_buildLlama2Prompt } from "ai/prompts";
-
-// TODO: Use dependency injection to avoid importing from node-llama-cpp to make testing easier
-import {
-  LlamaChatSession,
-  LlamaContext,
-  LlamaModel,
-  Token,
-} from "node-llama-cpp";
+import { LLamaCppAdaptor, Token } from "./llamacpp-adaptor.js";
 
 function isString(x: any): x is string {
   return typeof x === "string";
@@ -63,30 +56,16 @@ export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
   readonly provider = "llamacpp";
   modelId: string;
-  modelPath: string;
-  private session?: LlamaChatSession;
+  adaptor: LLamaCppAdaptor;
   defaultObjectGenerationMode: "json" | "tool" | "grammar" | undefined;
 
   constructor(
-    modelPath: string,
+    adaptor: LLamaCppAdaptor,
     defaultObjectGenerationMode?: "json" | "tool" | "grammar"
   ) {
-    this.modelPath = modelPath;
+    this.adaptor = adaptor;
     this.modelId = "unknown";
     this.defaultObjectGenerationMode = defaultObjectGenerationMode;
-  }
-
-  private async getSession() {
-    if (!this.session) {
-      const model = new LlamaModel({ modelPath: this.modelPath });
-      const context = new LlamaContext({ model });
-
-      this.session = new LlamaChatSession({
-        context,
-        printLLamaSystemInfo: false,
-      });
-    }
-    return this.session;
   }
 
   async doGenerate(options: LanguageModelV1CallOptions): Promise<{
@@ -99,9 +78,8 @@ export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
   }> {
     const messages = convertLanguageModelPromptToMessages(options.prompt);
     const prompt = experimental_buildLlama2Prompt(messages);
-    const session = await this.getSession();
 
-    const responseText = await session.prompt(prompt, {
+    const responseText = await this.adaptor.prompt(prompt, {
       maxTokens: options.maxTokens,
     });
 
@@ -126,7 +104,7 @@ export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
   }> {
     const messages = convertLanguageModelPromptToMessages(options.prompt);
     const prompt = experimental_buildLlama2Prompt(messages);
-    const session = await this.getSession();
+    const session = this.adaptor;
 
     return {
       stream: new ReadableStream({
@@ -138,7 +116,7 @@ export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
                 tokens.push(...chunk);
                 controller.enqueue({
                   type: "text-delta",
-                  textDelta: session.context.decode(chunk),
+                  textDelta: session.decode(chunk),
                 });
               },
             })

@@ -1,3 +1,4 @@
+import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
 import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.js";
 
 /**
@@ -5,26 +6,13 @@ import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.
  */
 
 export class LLamaCpp {
-  modelPath?: string;
+  adaptor: LLamaCppAdaptor;
 
-  constructor(options?: { modelPath?: string }) {
-    this.modelPath = options?.modelPath;
-  }
-
-  private get getModelPath() {
-    const modelPath = this.modelPath || process.env.MODEL_PATH;
-    if (!modelPath) {
-      throw new Error("model path not defined");
-    }
-    return modelPath;
+  constructor(adaptor: LLamaCppAdaptor) {
+    this.adaptor = adaptor;
   }
 
   chat() {
-    return new LLamaCppCompletionLanguageModel(this.getModelPath);
+    return new LLamaCppCompletionLanguageModel(this.adaptor);
   }
 }
-
-/**
- * Default LLamaCpp provider instance.
- */
-export const llamacpp = new LLamaCpp();
