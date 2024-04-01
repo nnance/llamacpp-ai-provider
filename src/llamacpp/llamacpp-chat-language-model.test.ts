@@ -1,66 +1,68 @@
-import { LanguageModelV1Prompt } from "ai/spec";
-import { convertLanguageModelPromptToMessages } from "./llamacpp-chat-language-model.js";
-import { Message } from "ai";
+import { LanguageModelV1CallOptions, LanguageModelV1Prompt } from "ai/spec";
+import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
+import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.js";
 
-describe("convertLanguageModelPromptToMessages", () => {
-  it("should convert LanguageModelV1Prompt to Messages", () => {
-    const prompt: LanguageModelV1Prompt = [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "Hello",
-          },
-        ],
-      },
-      { role: "assistant", content: [{ type: "text", text: "Hi" }] },
-    ];
+class LLamaCppAdaptorMock implements LLamaCppAdaptor {
+  decode(batch: number[]): string {
+    return "Hello";
+  }
+  async prompt(text: string): Promise<string> {
+    return "Hello, how can I help you?";
+  }
+}
 
-    const expected: Message[] = [
-      { id: "0", role: "user", content: "Hello" },
-      { id: "1", role: "assistant", content: "Hi" },
-    ];
+describe("LLamaCppCompletionLanguageModel", () => {
+  let model: LLamaCppCompletionLanguageModel;
 
-    const result = convertLanguageModelPromptToMessages(prompt);
+  // Create a mock prompt and options
+  const prompt: LanguageModelV1Prompt = [
+    {
+      role: "user",
+      content: [
+        {
+          type: "text",
+          text: "hello",
+        },
+      ],
+    },
+  ];
 
-    expect(result).toEqual(expected);
+  const options: LanguageModelV1CallOptions = {
+    mode: { type: "regular" },
+    prompt,
+    inputFormat: "prompt",
+  };
+
+  beforeEach(() => {
+    const mock = new LLamaCppAdaptorMock();
+    // Create a new instance of the LLamaCppCompletionLanguageModel before each test
+    model = new LLamaCppCompletionLanguageModel(mock);
   });
 
-  it("should handle empty prompt", () => {
-    const prompt: LanguageModelV1Prompt = [];
+  describe("doGenerate", () => {
+    it("should generate completion text", async () => {
+      // Call the doGenerate method
+      const result = await model.doGenerate(options);
 
-    const expected: Message[] = [];
-
-    const result = convertLanguageModelPromptToMessages(prompt);
-
-    expect(result).toEqual(expected);
+      // Assert the expected result
+      expect(result.finishReason).toEqual("stop");
+      expect(result.text).toBeDefined();
+      expect(result.usage.promptTokens).toEqual(0);
+      expect(result.usage.completionTokens).toEqual(0);
+      expect(result.rawCall.rawPrompt).toBeUndefined();
+      expect(result.rawCall.rawSettings).toEqual({});
+    });
   });
 
-  it("should handle prompt with non-text content", () => {
-    const prompt: LanguageModelV1Prompt = [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "hello",
-          },
-        ],
-      },
-      {
-        role: "assistant",
-        content: [],
-      },
-    ];
+  describe("doStream", () => {
+    it("should generate a readable stream", async () => {
+      // Call the doStream method
+      const result = await model.doStream(options);
 
-    const expected: Message[] = [
-      { id: "0", role: "user", content: "hello" },
-      { id: "1", role: "assistant", content: "" },
-    ];
-
-    const result = convertLanguageModelPromptToMessages(prompt);
-
-    expect(result).toEqual(expected);
+      // Assert the expected result
+      expect(result.stream).toBeInstanceOf(ReadableStream);
+      expect(result.rawCall.rawPrompt).toBeUndefined();
+      expect(result.rawCall.rawSettings).toEqual({});
+    });
   });
 });

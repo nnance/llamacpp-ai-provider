@@ -3,7 +3,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 
 import { ExperimentalMessage, experimental_streamText } from "ai";
-import { LLamaCpp, NodeLLamaCpp } from "../index.js";
+import { LLamaCpp } from "../index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const modelPath = path.join(
@@ -20,8 +20,7 @@ const terminal = readline.createInterface({
 const messages: ExperimentalMessage[] = [];
 
 async function main() {
-  const nodeAdaptor = new NodeLLamaCpp(modelPath);
-  const llamacpp = new LLamaCpp(nodeAdaptor);
+  const llamacpp = new LLamaCpp(modelPath);
   const model = llamacpp.chat();
 
   while (true) {

@@ -41,8 +41,7 @@ function getStringContent(
   }
 }
 
-// TODO: Update tests so this can become private again
-export function convertLanguageModelPromptToMessages(
+function convertLanguageModelPromptToMessages(
   prompt: LanguageModelV1Prompt
 ): Message[] {
   return prompt.map(({ role, content }, id) => ({
