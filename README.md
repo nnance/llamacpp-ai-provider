@@ -14,8 +14,8 @@ This project is under active construction and current depends on the node-llama-
 
 ## Roadmap
 
-[ ] Direct integration with LLamaC++
-[ ] Support Completion Language Model
+- [ ] Direct integration with LLamaC++
+- [ ] Support Completion Language Model
 
 ## Installation
 
@@ -80,4 +80,4 @@ async function main() {
 main().catch(console.error);
 ```
 
-> For more examples, see the [getting started guide](https://nnance.github.io/llamacpp-ai-provider/guide/)
+> For more examples, see the [getting started guide](https://nnance.github.io/llamacpp-ai-provider/guides/)
