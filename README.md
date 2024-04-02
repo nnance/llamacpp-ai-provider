@@ -80,4 +80,4 @@ async function main() {
 main().catch(console.error);
 ```
 
-> For more examples, see the [getting started guide](https://nnance.github.io/llamacpp-ai-provider/guides/)
+> For more examples, see the [getting started guide](https://github.com/nnance/llamacpp-ai-provider/tree/main/guides)
