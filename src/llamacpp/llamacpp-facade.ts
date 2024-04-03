@@ -42,11 +42,17 @@ class NodeLLamaCpp implements LLamaCppAdaptor {
     });
   }
 
-  async evaluate(query: string): Promise<string> {
+  async evaluate(
+    query: string,
+    options?: LLamaCppPromptOptions
+  ): Promise<string> {
     const { context } = await this.getSession();
     const tokens = context.encode(query);
     const res: Token[] = [];
     for await (const modelToken of context.evaluate(tokens)) {
+      if (options?.onToken) {
+        options.onToken([modelToken]);
+      }
       res.push(modelToken);
 
       // It's important to not concatinate the results as strings,

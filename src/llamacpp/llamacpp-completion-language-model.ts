@@ -5,8 +5,6 @@ import {
   LanguageModelV1FunctionToolCall,
   LanguageModelV1StreamPart,
   LanguageModelV1FinishReason,
-  LanguageModelV1Prompt,
-  LanguageModelV1TextPart,
 } from "ai/spec";
 import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
 
@@ -80,12 +78,38 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
     rawCall: { rawPrompt: unknown; rawSettings: Record<string, unknown> };
     warnings?: LanguageModelV1CallWarning[];
   }> {
-    // Implement the logic for streaming completion text here
+    const session = this.adaptor;
+    const query = extractPromptContent(options);
+    if (!query) {
+      throw new Error("Missing prompt");
+    }
+
     const stream = new ReadableStream<LanguageModelV1StreamPart>({
       start(controller) {
-        // Implement the streaming logic here
-        // controller.enqueue({ text: "Streamed completion text" });
-        controller.close();
+        const tokens: number[] = [];
+        session
+          .evaluate(query.prompt, {
+            onToken(chunk: number[]) {
+              tokens.push(...chunk);
+              controller.enqueue({
+                type: "text-delta",
+                textDelta: session.decode(chunk),
+              });
+            },
+          })
+          .then(() => {
+            const part: LanguageModelV1StreamPart = {
+              type: "finish",
+              finishReason: "stop",
+              usage: {
+                completionTokens: tokens.length,
+                promptTokens: 0,
+              },
+            };
+
+            controller.enqueue(part);
+            controller.close();
+          });
       },
     });
 
