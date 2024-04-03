@@ -1,6 +1,7 @@
 import { LlamaChatSession, LlamaContext, LlamaModel } from "node-llama-cpp";
 import { LLamaCppAdaptor, LLamaCppPromptOptions } from "./llamacpp-adaptor.js";
 import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.js";
+import { LlamaCppCompletionLanguageModel } from "./llamacpp-completion-language-model.js";
 
 class NodeLLamaCpp implements LLamaCppAdaptor {
   private modelPath: string;
@@ -57,5 +58,9 @@ export class LLamaCpp {
 
   chat() {
     return new LLamaCppCompletionLanguageModel(this.adaptor);
+  }
+
+  completion() {
+    return new LlamaCppCompletionLanguageModel(this.adaptor);
   }
 }
