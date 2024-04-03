@@ -51,20 +51,25 @@ function convertLanguageModelPromptToMessages(
   }));
 }
 
-export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
-  readonly specificationVersion = "v1";
-  readonly provider = "llamacpp";
-  modelId: string;
-  adaptor: LLamaCppAdaptor;
-  defaultObjectGenerationMode: "json" | "tool" | "grammar" | undefined;
+interface LLamaCppChatConfig {
+  provider?: string;
+  modelId?: string;
+  defaultObjectGenerationMode?: "json" | "tool" | "grammar";
+}
 
-  constructor(
-    adaptor: LLamaCppAdaptor,
-    defaultObjectGenerationMode?: "json" | "tool" | "grammar"
-  ) {
+export class LLamaCppChatLanguageModel implements LanguageModelV1 {
+  readonly specificationVersion = "v1";
+  readonly provider: string;
+  readonly modelId: string;
+  readonly adaptor: LLamaCppAdaptor;
+  readonly defaultObjectGenerationMode: "json" | "tool" | "grammar";
+
+  constructor(adaptor: LLamaCppAdaptor, config?: LLamaCppChatConfig) {
     this.adaptor = adaptor;
-    this.modelId = "unknown";
-    this.defaultObjectGenerationMode = defaultObjectGenerationMode;
+    this.provider = config?.provider || "llamacpp.chat";
+    this.modelId = config?.modelId || "unknown";
+    this.defaultObjectGenerationMode =
+      config?.defaultObjectGenerationMode || "tool";
   }
 
   async doGenerate(options: LanguageModelV1CallOptions): Promise<{

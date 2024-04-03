@@ -1,10 +1,16 @@
-import { LlamaChatSession, LlamaContext, LlamaModel } from "node-llama-cpp";
+import {
+  LlamaChatSession,
+  LlamaContext,
+  LlamaModel,
+  Token,
+} from "node-llama-cpp";
 import { LLamaCppAdaptor, LLamaCppPromptOptions } from "./llamacpp-adaptor.js";
-import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.js";
+import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
+import { LlamaCppCompletionLanguageModel } from "./llamacpp-completion-language-model.js";
 
 class NodeLLamaCpp implements LLamaCppAdaptor {
   private modelPath: string;
-  private session?: LlamaChatSession;
+  private activeSession?: LlamaChatSession;
 
   constructor(modelPath?: string) {
     const path = modelPath || process.env.MODEL_PATH;
@@ -15,17 +21,17 @@ class NodeLLamaCpp implements LLamaCppAdaptor {
   }
 
   async getSession(): Promise<LlamaChatSession> {
-    if (!this.session) {
+    if (!this.activeSession) {
       const model = new LlamaModel({ modelPath: this.modelPath });
       const context = new LlamaContext({ model });
 
-      this.session = new LlamaChatSession({
+      this.activeSession = new LlamaChatSession({
         context,
         printLLamaSystemInfo: false,
       });
     }
 
-    return this.session;
+    return this.activeSession;
   }
 
   async prompt(text: string, options?: LLamaCppPromptOptions): Promise<string> {
@@ -36,11 +42,38 @@ class NodeLLamaCpp implements LLamaCppAdaptor {
     });
   }
 
-  decode(batch: number[]): string {
-    if (this.session) {
-      return this.session.context.decode(batch);
+  async evaluate(
+    query: string,
+    options?: LLamaCppPromptOptions
+  ): Promise<string> {
+    const { context } = await this.getSession();
+    const tokens = context.encode(query);
+    const res: Token[] = [];
+    for await (const modelToken of context.evaluate(tokens)) {
+      if (options?.onToken) {
+        options.onToken([modelToken]);
+      }
+      res.push(modelToken);
+
+      // It's important to not concatinate the results as strings,
+      // as doing so will break some characters (like some emojis)
+      // that consist of multiple tokens.
+      // By using an array of tokens, we can decode them correctly together.
+      const resString: string = context.decode(res);
+
+      const lastPart = resString.split("ASSISTANT:").reverse()[0];
+      if (lastPart.includes("USER:")) break;
     }
-    return "";
+
+    return context.decode(res).split("USER:")[0];
+  }
+
+  decode(batch: number[]): string {
+    if (!this.activeSession) {
+      throw new Error("No active session");
+    }
+    const { context } = this.activeSession;
+    return context.decode(batch);
   }
 }
 
@@ -56,6 +89,10 @@ export class LLamaCpp {
   }
 
   chat() {
-    return new LLamaCppCompletionLanguageModel(this.adaptor);
+    return new LLamaCppChatLanguageModel(this.adaptor);
+  }
+
+  completion() {
+    return new LlamaCppCompletionLanguageModel(this.adaptor);
   }
 }

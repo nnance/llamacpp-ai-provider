@@ -6,6 +6,7 @@ export interface LLamaCppPromptOptions {
 }
 
 export interface LLamaCppAdaptor {
+  evaluate(query: string, options?: LLamaCppPromptOptions): Promise<string>;
   prompt(text: string, options?: LLamaCppPromptOptions): Promise<string>;
   decode(batch: Token[]): string;
 }
