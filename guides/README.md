@@ -2,4 +2,5 @@
 
 This is a complete list of guides and examples using Vercel AI and the llamacpp-ai-provider:
 
-- [llamaacpp-nextjs-chatbot](./llamacpp-nextjs-chatbot.md)
+- [llamacpp-chatbot-cli](./llamacpp-chatbot-cli.md): CLI Chatbot
+- [llamacpp-nextjs-chatbot](./llamacpp-nextjs-chatbot.md): NextJS Web Chatbot
