@@ -117,7 +117,7 @@ Finally you can return the streaming text response fromn the POST handler with t
 
 ```ts
 // Return the result using the Vercel AI SDK:
-return new StreamingTextResponse(result.textStream);
+return new StreamingTextResponse(result.toAIStream());
 ```
 
 ## Adding the Chat Interface
