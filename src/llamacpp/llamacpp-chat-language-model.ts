@@ -57,7 +57,7 @@ interface LLamaCppChatConfig {
   defaultObjectGenerationMode?: "json" | "tool" | "grammar";
 }
 
-export class LLamaCppCompletionLanguageModel implements LanguageModelV1 {
+export class LLamaCppChatLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
   readonly provider: string;
   readonly modelId: string;

@@ -4,7 +4,7 @@ import {
   LanguageModelV1StreamPart,
 } from "ai/spec";
 import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
-import { LLamaCppCompletionLanguageModel } from "./llamacpp-chat-language-model.js";
+import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
 import { LLamaChatPromptOptions } from "node-llama-cpp";
 
 const assistantResponse = "Hello, how can I help you?";
@@ -12,6 +12,9 @@ const assistantResponse = "Hello, how can I help you?";
 class LLamaCppAdaptorMock implements LLamaCppAdaptor {
   decode(batch: number[]): string {
     return "Hello";
+  }
+  async evaluate(query: string): Promise<string> {
+    return "Generated completion text";
   }
   async prompt(text: string, options: LLamaChatPromptOptions): Promise<string> {
     if (options.onToken) {
@@ -24,7 +27,7 @@ class LLamaCppAdaptorMock implements LLamaCppAdaptor {
 }
 
 describe("LLamaCppCompletionLanguageModel", () => {
-  let model: LLamaCppCompletionLanguageModel;
+  let model: LLamaCppChatLanguageModel;
 
   // Create a mock prompt and options
   const prompt: LanguageModelV1Prompt = [
@@ -48,7 +51,7 @@ describe("LLamaCppCompletionLanguageModel", () => {
   beforeEach(() => {
     const mock = new LLamaCppAdaptorMock();
     // Create a new instance of the LLamaCppCompletionLanguageModel before each test
-    model = new LLamaCppCompletionLanguageModel(mock);
+    model = new LLamaCppChatLanguageModel(mock);
   });
 
   describe("doGenerate", () => {

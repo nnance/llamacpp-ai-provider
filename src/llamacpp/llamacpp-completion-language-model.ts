@@ -5,6 +5,8 @@ import {
   LanguageModelV1FunctionToolCall,
   LanguageModelV1StreamPart,
   LanguageModelV1FinishReason,
+  LanguageModelV1Prompt,
+  LanguageModelV1TextPart,
 } from "ai/spec";
 import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
 
@@ -12,6 +14,21 @@ interface LLamaCppCompletionConfig {
   provider?: string;
   modelId?: string;
   defaultObjectGenerationMode?: "json" | "tool" | "grammar";
+}
+
+function extractPromptContent({
+  inputFormat,
+  prompt,
+}: LanguageModelV1CallOptions) {
+  if (
+    inputFormat === "prompt" &&
+    prompt.length === 1 &&
+    prompt[0].role === "user" &&
+    prompt[0].content.length === 1 &&
+    prompt[0].content[0].type === "text"
+  ) {
+    return { prompt: prompt[0].content[0].text };
+  }
 }
 
 export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
@@ -37,9 +54,15 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
     rawCall: { rawPrompt: unknown; rawSettings: Record<string, unknown> };
     warnings?: LanguageModelV1CallWarning[];
   }> {
-    // Implement the logic for generating completion text here
+    const query = extractPromptContent(options);
+    if (!query) {
+      throw new Error("Missing prompt");
+    }
+
+    const response = await this.adaptor.evaluate(query.prompt);
+
     return {
-      text: "Generated completion text",
+      text: response,
       finishReason: "stop",
       usage: {
         promptTokens: 0,
