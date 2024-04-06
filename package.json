@@ -26,13 +26,14 @@
     "tsx": "^4.7.1",
     "typescript": "^5.4.3"
   },
-  "dependencies": {
-    "node-llama-cpp": "^2.8.9"
-  },
   "peerDependencies": {
     "ai": "^3.0.16"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "node-addon-api": "^8.0.0",
+    "node-llama-cpp": "^2.8.9"
+  }
 }
