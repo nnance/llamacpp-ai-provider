@@ -3,13 +3,13 @@ import {
   LanguageModelV1Prompt,
   LanguageModelV1StreamPart,
 } from "ai/spec";
-import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
+import { LLamaCppAdapter } from "./llamacpp-adapter.js";
 import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
 import { LLamaChatPromptOptions } from "node-llama-cpp";
 
 const assistantResponse = "Hello, how can I help you?";
 
-class LLamaCppAdaptorMock implements LLamaCppAdaptor {
+class LLamaCppAdaptorMock implements LLamaCppAdapter {
   decode(batch: number[]): string {
     return "Hello";
   }

@@ -14,7 +14,7 @@ import {
 import { Message } from "ai";
 
 import { experimental_buildLlama2Prompt } from "ai/prompts";
-import { LLamaCppAdaptor, Token } from "./llamacpp-adaptor.js";
+import { LLamaCppAdapter, Token } from "./llamacpp-adapter.js";
 
 function isString(x: any): x is string {
   return typeof x === "string";
@@ -61,10 +61,10 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
   readonly provider: string;
   readonly modelId: string;
-  readonly adaptor: LLamaCppAdaptor;
+  readonly adaptor: LLamaCppAdapter;
   readonly defaultObjectGenerationMode: "json" | "tool" | "grammar";
 
-  constructor(adaptor: LLamaCppAdaptor, config?: LLamaCppChatConfig) {
+  constructor(adaptor: LLamaCppAdapter, config?: LLamaCppChatConfig) {
     this.adaptor = adaptor;
     this.provider = config?.provider || "llamacpp.chat";
     this.modelId = config?.modelId || "unknown";
