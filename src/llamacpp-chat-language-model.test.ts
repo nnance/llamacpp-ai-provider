@@ -3,7 +3,10 @@ import {
   LanguageModelV1Prompt,
   LanguageModelV1StreamPart,
 } from "ai/spec";
-import { LLamaCppAdapter, LLamaCppPromptOptions } from "./llamacpp-adapter.js";
+import {
+  LLamaCppAdapter,
+  LLamaCppEvaluateOptions,
+} from "./llamacpp-adapter.js";
 import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
 
 const assistantResponse = "Hello, how can I help you?";
@@ -15,7 +18,10 @@ class LLamaCppAdaptorMock implements LLamaCppAdapter {
   async evaluate(query: string): Promise<string> {
     return "Generated completion text";
   }
-  async prompt(text: string, options: LLamaCppPromptOptions): Promise<string> {
+  async prompt(
+    text: string,
+    options: LLamaCppEvaluateOptions
+  ): Promise<string> {
     if (options.onToken) {
       options.onToken("Hello");
       return assistantResponse;

@@ -83,7 +83,7 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
     const messages = convertLanguageModelPromptToMessages(options.prompt);
     const prompt = experimental_buildLlama2Prompt(messages);
 
-    const responseText = await this.adaptor.prompt(prompt, {
+    const responseText = await this.adaptor.evaluate(prompt, {
       maxTokens: options.maxTokens,
     });
 
@@ -114,7 +114,7 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
       stream: new ReadableStream({
         start(controller) {
           session
-            .prompt(prompt, {
+            .evaluate(prompt, {
               onToken(textDelta: string) {
                 controller.enqueue({
                   type: "text-delta",

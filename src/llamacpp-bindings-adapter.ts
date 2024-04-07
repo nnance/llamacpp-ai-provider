@@ -1,5 +1,8 @@
 import { createRequire } from "module";
-import { LLamaCppAdapter, LLamaCppPromptOptions } from "./llamacpp-adapter.js";
+import {
+  LLamaCppAdapter,
+  LLamaCppEvaluateOptions,
+} from "./llamacpp-adapter.js";
 import ILLAMABindings, { LLAMAContext } from "./llamacpp-bindings.js";
 
 const require = createRequire(import.meta.url);
@@ -14,7 +17,7 @@ export class LLamaCppBindings implements LLamaCppAdapter {
 
   async evaluate(
     query: string,
-    options?: LLamaCppPromptOptions | undefined
+    options?: LLamaCppEvaluateOptions | undefined
   ): Promise<string> {
     async function* evalGenerator(ctx: LLAMAContext, tokens: Uint32Array) {
       let evalTokens = tokens;
@@ -45,11 +48,5 @@ export class LLamaCppBindings implements LLamaCppAdapter {
       }
     }
     return results;
-  }
-  prompt(
-    text: string,
-    options?: LLamaCppPromptOptions | undefined
-  ): Promise<string> {
-    throw new Error("Method not implemented.");
   }
 }
