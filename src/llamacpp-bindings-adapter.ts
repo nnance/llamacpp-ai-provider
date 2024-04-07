@@ -1,9 +1,9 @@
 import { createRequire } from "module";
 import { LLamaCppAdapter, LLamaCppPromptOptions } from "./llamacpp-adapter.js";
-import ILLAMABindings from "../llamacpp-bindings.js";
+import ILLAMABindings from "./llamacpp-bindings.js";
 
 const require = createRequire(import.meta.url);
-const addon: ILLAMABindings = require("../../llamacpp/build/Release/llamacpp-bindings.node");
+const addon: ILLAMABindings = require("../llamacpp/build/Release/llamacpp-bindings.node");
 
 export class LLamaCppBindings implements LLamaCppAdapter {
   constructor(modelPath: string) {
