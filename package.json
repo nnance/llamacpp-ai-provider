@@ -33,7 +33,8 @@
     "ai": "^3.0.16"
   },
   "files": [
-    "dist"
+    "dist",
+    "llamacpp/build/Release"
   ],
   "dependencies": {
     "node-addon-api": "^8.0.0"
