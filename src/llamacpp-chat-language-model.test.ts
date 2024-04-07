@@ -3,22 +3,27 @@ import {
   LanguageModelV1Prompt,
   LanguageModelV1StreamPart,
 } from "ai/spec";
-import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
+import {
+  LLamaCppAdapter,
+  LLamaCppEvaluateOptions,
+} from "./llamacpp-adapter.js";
 import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
-import { LLamaChatPromptOptions } from "node-llama-cpp";
 
 const assistantResponse = "Hello, how can I help you?";
 
-class LLamaCppAdaptorMock implements LLamaCppAdaptor {
+class LLamaCppAdaptorMock implements LLamaCppAdapter {
   decode(batch: number[]): string {
     return "Hello";
   }
   async evaluate(query: string): Promise<string> {
     return "Generated completion text";
   }
-  async prompt(text: string, options: LLamaChatPromptOptions): Promise<string> {
+  async prompt(
+    text: string,
+    options: LLamaCppEvaluateOptions
+  ): Promise<string> {
     if (options.onToken) {
-      options.onToken([1, 2, 3]);
+      options.onToken("Hello");
       return assistantResponse;
     } else {
       return assistantResponse;
@@ -92,7 +97,7 @@ describe("LLamaCppCompletionLanguageModel", () => {
         finishReason: "stop",
         type: "finish",
         usage: {
-          completionTokens: 3,
+          completionTokens: 0,
           promptTokens: 0,
         },
       });

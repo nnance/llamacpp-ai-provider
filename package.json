@@ -4,9 +4,11 @@
   "description": "Vercel AI Provider for running LLMs locally using LLamaCpp",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "prepublish": "tsc",
-    "pretest": "tsc",
+    "setup": "./bin/update_submodules.sh",
+    "build": "cmake-js -d ./llamacpp build && tsc",
+    "clean": "cmake-js -d ./llamacpp rebuild && tsc --build --clean",
+    "prepublish": "npm run clean",
+    "pretest": "npm run build",
     "postversion": "git push && git push --tags",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest ./dist/**/*.test.js"
   },
@@ -21,18 +23,19 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.2",
+    "cmake-js": "^7.3.0",
     "jest": "^29.7.0",
     "prettier": "^3.2.5",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3"
-  },
-  "dependencies": {
-    "node-llama-cpp": "^2.8.9"
   },
   "peerDependencies": {
     "ai": "^3.0.16"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "node-addon-api": "^8.0.0"
+  }
 }

@@ -56,3 +56,13 @@ dist
 
 # model files
 /models
+
+# MacOS
+.DS_Store
+
+# c++ Libraries & Build
+lib/
+build/
+
+# VSCode settings
+.vscode/

@@ -6,7 +6,7 @@ import {
   LanguageModelV1StreamPart,
   LanguageModelV1FinishReason,
 } from "ai/spec";
-import { LLamaCppAdaptor } from "./llamacpp-adaptor.js";
+import { LLamaCppAdapter } from "./llamacpp-adapter.js";
 
 interface LLamaCppCompletionConfig {
   provider?: string;
@@ -32,11 +32,11 @@ function extractPromptContent({
 export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
   readonly provider: string;
-  readonly adaptor: LLamaCppAdaptor;
+  readonly adaptor: LLamaCppAdapter;
   readonly modelId: string;
   readonly defaultObjectGenerationMode: "tool" | "json" | "grammar";
 
-  constructor(adaptor: LLamaCppAdaptor, config?: LLamaCppCompletionConfig) {
+  constructor(adaptor: LLamaCppAdapter, config?: LLamaCppCompletionConfig) {
     this.adaptor = adaptor;
     this.provider = config?.provider || "llamacpp.completion";
     this.modelId = config?.modelId || "unknown";
@@ -86,14 +86,12 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
 
     const stream = new ReadableStream<LanguageModelV1StreamPart>({
       start(controller) {
-        const tokens: number[] = [];
         session
           .evaluate(query.prompt, {
-            onToken(chunk: number[]) {
-              tokens.push(...chunk);
+            onToken(textDelta: string) {
               controller.enqueue({
                 type: "text-delta",
-                textDelta: session.decode(chunk),
+                textDelta,
               });
             },
           })
@@ -102,7 +100,7 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
               type: "finish",
               finishReason: "stop",
               usage: {
-                completionTokens: tokens.length,
+                completionTokens: 0,
                 promptTokens: 0,
               },
             };

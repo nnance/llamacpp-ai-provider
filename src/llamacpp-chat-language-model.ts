@@ -14,7 +14,7 @@ import {
 import { Message } from "ai";
 
 import { experimental_buildLlama2Prompt } from "ai/prompts";
-import { LLamaCppAdaptor, Token } from "./llamacpp-adaptor.js";
+import { LLamaCppAdapter, Token } from "./llamacpp-adapter.js";
 
 function isString(x: any): x is string {
   return typeof x === "string";
@@ -61,10 +61,10 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
   readonly provider: string;
   readonly modelId: string;
-  readonly adaptor: LLamaCppAdaptor;
+  readonly adaptor: LLamaCppAdapter;
   readonly defaultObjectGenerationMode: "json" | "tool" | "grammar";
 
-  constructor(adaptor: LLamaCppAdaptor, config?: LLamaCppChatConfig) {
+  constructor(adaptor: LLamaCppAdapter, config?: LLamaCppChatConfig) {
     this.adaptor = adaptor;
     this.provider = config?.provider || "llamacpp.chat";
     this.modelId = config?.modelId || "unknown";
@@ -83,7 +83,7 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
     const messages = convertLanguageModelPromptToMessages(options.prompt);
     const prompt = experimental_buildLlama2Prompt(messages);
 
-    const responseText = await this.adaptor.prompt(prompt, {
+    const responseText = await this.adaptor.evaluate(prompt, {
       maxTokens: options.maxTokens,
     });
 
@@ -113,14 +113,12 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
     return {
       stream: new ReadableStream({
         start(controller) {
-          const tokens: Token[] = [];
           session
-            .prompt(prompt, {
-              onToken(chunk: Token[]) {
-                tokens.push(...chunk);
+            .evaluate(prompt, {
+              onToken(textDelta: string) {
                 controller.enqueue({
                   type: "text-delta",
-                  textDelta: session.decode(chunk),
+                  textDelta,
                 });
               },
             })
@@ -129,7 +127,7 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
                 type: "finish",
                 finishReason: "stop",
                 usage: {
-                  completionTokens: tokens.length,
+                  completionTokens: 0,
                   promptTokens: 0,
                 },
               };

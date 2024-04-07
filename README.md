@@ -14,8 +14,8 @@ This project is under active construction and current depends on the node-llama-
 
 ## Roadmap
 
-- [ ] Direct integration with LLamaC++
-- [ ] Support Completion Language Model
+- [x] Direct integration with LLamaC++
+- [x] Support Completion Language Model
 
 ## Installation
 
