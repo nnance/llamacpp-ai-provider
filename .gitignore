@@ -65,4 +65,4 @@ lib/
 build/
 
 # VSCode settings
-.vscode
+.vscode/
