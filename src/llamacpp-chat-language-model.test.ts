@@ -17,7 +17,7 @@ class LLamaCppAdaptorMock implements LLamaCppAdapter {
   }
   async prompt(text: string, options: LLamaCppPromptOptions): Promise<string> {
     if (options.onToken) {
-      options.onToken([1, 2, 3]);
+      options.onToken("Hello");
       return assistantResponse;
     } else {
       return assistantResponse;
@@ -91,7 +91,7 @@ describe("LLamaCppCompletionLanguageModel", () => {
         finishReason: "stop",
         type: "finish",
         usage: {
-          completionTokens: 3,
+          completionTokens: 0,
           promptTokens: 0,
         },
       });

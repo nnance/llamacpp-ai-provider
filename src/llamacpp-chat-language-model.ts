@@ -113,14 +113,12 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
     return {
       stream: new ReadableStream({
         start(controller) {
-          const tokens: Token[] = [];
           session
             .prompt(prompt, {
-              onToken(chunk: Token[]) {
-                tokens.push(...chunk);
+              onToken(textDelta: string) {
                 controller.enqueue({
                   type: "text-delta",
-                  textDelta: session.decode(chunk),
+                  textDelta,
                 });
               },
             })
@@ -129,7 +127,7 @@ export class LLamaCppChatLanguageModel implements LanguageModelV1 {
                 type: "finish",
                 finishReason: "stop",
                 usage: {
-                  completionTokens: tokens.length,
+                  completionTokens: 0,
                   promptTokens: 0,
                 },
               };

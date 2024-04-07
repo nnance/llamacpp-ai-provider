@@ -86,14 +86,12 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
 
     const stream = new ReadableStream<LanguageModelV1StreamPart>({
       start(controller) {
-        const tokens: number[] = [];
         session
           .evaluate(query.prompt, {
-            onToken(chunk: number[]) {
-              tokens.push(...chunk);
+            onToken(textDelta: string) {
               controller.enqueue({
                 type: "text-delta",
-                textDelta: session.decode(chunk),
+                textDelta,
               });
             },
           })
@@ -102,7 +100,7 @@ export class LlamaCppCompletionLanguageModel implements LanguageModelV1 {
               type: "finish",
               finishReason: "stop",
               usage: {
-                completionTokens: tokens.length,
+                completionTokens: 0,
                 promptTokens: 0,
               },
             };
