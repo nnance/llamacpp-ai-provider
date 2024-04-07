@@ -18,9 +18,9 @@ execute_process(COMMAND node -p "require('node-addon-api').include.slice(1,-1)"
 
 include_directories(${NODE_ADDON_API_DIR} ${CMAKE_JS_INC})
 
-add_subdirectory("lib/llamacpp")
-include_directories("lib/llamacpp")
-include_directories("lib/llamacpp/common")
+add_subdirectory("./lib")
+include_directories("./lib")
+include_directories("./lib/common")
 
 file(GLOB SOURCE_FILES "llamacpp-bindings.cc")
 
@@ -33,7 +33,7 @@ target_link_libraries(${PROJECT_NAME} "common")
 # copy ggml-metal.metal to release folder
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
-  ${CMAKE_SOURCE_DIR}/lib/llamacpp/ggml-metal.metal
+  ${CMAKE_SOURCE_DIR}/lib/ggml-metal.metal
   ${CMAKE_CURRENT_BINARY_DIR}/Release/ggml-metal.metal)
 
 if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
