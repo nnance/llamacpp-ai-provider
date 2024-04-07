@@ -10,7 +10,7 @@
     "prepublish": "npm run clean",
     "pretest": "npm run build",
     "postversion": "git push origin --tags",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest ./dist/**/*.test.js"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest ./dist/*.test.js"
   },
   "type": "module",
   "keywords": [

@@ -12,14 +12,8 @@ import { LLamaCppChatLanguageModel } from "./llamacpp-chat-language-model.js";
 const assistantResponse = "Hello, how can I help you?";
 
 class LLamaCppAdaptorMock implements LLamaCppAdapter {
-  decode(batch: number[]): string {
-    return "Hello";
-  }
-  async evaluate(query: string): Promise<string> {
-    return "Generated completion text";
-  }
-  async prompt(
-    text: string,
+  async evaluate(
+    query: string,
     options: LLamaCppEvaluateOptions
   ): Promise<string> {
     if (options.onToken) {
