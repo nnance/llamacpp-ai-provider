@@ -4,7 +4,7 @@
 REPO_URL="https://github.com/ggerganov/llama.cpp.git"
 
 # Define the directory where the repository will be cloned
-DIR="lib/llamacpp"
+DIR="llamacpp/lib"
 
 # Define the compatible tag
 TAG="b1961"
