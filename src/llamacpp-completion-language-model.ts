@@ -5,7 +5,7 @@ import {
   LanguageModelV1FunctionToolCall,
   LanguageModelV1StreamPart,
   LanguageModelV1FinishReason,
-} from "ai/spec";
+} from "@ai-sdk/provider";
 import { LLamaCppAdapter } from "./llamacpp-adapter.js";
 
 interface LLamaCppCompletionConfig {

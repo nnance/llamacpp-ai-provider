@@ -10,7 +10,7 @@ import {
   LanguageModelV1TextPart,
   LanguageModelV1ToolCallPart,
   LanguageModelV1ToolResultPart,
-} from "ai/spec";
+} from "@ai-sdk/provider";
 import { Message } from "ai";
 
 import { experimental_buildLlama2Prompt } from "ai/prompts";

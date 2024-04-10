@@ -21,6 +21,7 @@
   "author": "Nick Nance",
   "license": "MIT",
   "devDependencies": {
+    "@ai-sdk/provider": "^0.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.2",
     "cmake-js": "^7.3.0",
@@ -30,7 +31,7 @@
     "typescript": "^5.4.3"
   },
   "peerDependencies": {
-    "ai": "^3.0.16"
+    "ai": "^3.0.20"
   },
   "files": [
     "dist",
