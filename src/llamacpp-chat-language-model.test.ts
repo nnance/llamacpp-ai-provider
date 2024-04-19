@@ -2,7 +2,7 @@ import {
   LanguageModelV1CallOptions,
   LanguageModelV1Prompt,
   LanguageModelV1StreamPart,
-} from "ai/spec";
+} from "@ai-sdk/provider";
 import {
   LLamaCppAdapter,
   LLamaCppEvaluateOptions,
