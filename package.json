@@ -1,6 +1,6 @@
 {
   "name": "llamacpp-ai-provider",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Vercel AI Provider for running LLMs locally using LLamaCpp",
   "main": "./dist/index.js",
   "scripts": {
