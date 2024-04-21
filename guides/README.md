@@ -9,10 +9,10 @@ This is a complete list of guides and examples using Vercel AI and the llamacpp-
 
 ## Examples
 
-You can run any of the following examples with project root folder with:
+You can run any of the following examples from the project root folder where the {modelPath} is the full path to the LLM to use:
 
 ```ssh
-npx tsx ./src/examples/{example}
+npx tsx ./src/examples/{example} {modelPath}
 ```
 
 - [generate-text.ts](../src/examples/generate-text.ts): Text generation
