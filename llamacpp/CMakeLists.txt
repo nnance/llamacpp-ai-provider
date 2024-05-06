@@ -9,6 +9,7 @@ else()
 endif()
 
 add_definitions(-DNAPI_VERSION=7)
+set(LLAMA_METAL_EMBED_LIBRARY ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 execute_process(COMMAND node -p "require('node-addon-api').include.slice(1,-1)"
@@ -29,12 +30,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 target_link_libraries(${PROJECT_NAME} "llama")
 target_link_libraries(${PROJECT_NAME} "common")
-
-# copy ggml-metal.metal to release folder
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy
-  ${CMAKE_SOURCE_DIR}/lib/ggml-metal.metal
-  ${CMAKE_CURRENT_BINARY_DIR}/Release/ggml-metal.metal)
 
 if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
   # Generate node.lib
