@@ -43,7 +43,7 @@ public:
             }
         }
 
-        llama_backend_init(false);
+        llama_backend_init();
         model = llama_load_model_from_file(modelPath.c_str(), model_params);
 
         if (model == NULL)
@@ -56,10 +56,9 @@ public:
         context_params.seed = -1;
         context_params.n_ctx = 4096;
         context_params.n_threads = 6;
-        context_params.n_threads_batch == -1 ? context_params.n_threads : context_params.n_threads_batch;
 
         ctx = llama_new_context_with_model(model, context_params);
-        Napi::MemoryManagement::AdjustExternalMemory(Env(), llama_get_state_size(ctx));
+        Napi::MemoryManagement::AdjustExternalMemory(Env(), llama_state_get_size(ctx));
     }
 
     Napi::Value Encode(const Napi::CallbackInfo &info)
