@@ -1,16 +1,12 @@
 import * as readline from "node:readline/promises";
-import { fileURLToPath } from "url";
-import path from "path";
 
 import { ExperimentalMessage, experimental_streamText } from "ai";
 import { LLamaCpp } from "../index.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const modelPath = path.join(
-  __dirname,
-  "../../models",
-  "llama-2-7b-chat.Q4_K_M.gguf"
-);
+const model = process.argv[2];
+if (!model) {
+  throw new Error("Missing model path argument");
+}
 
 const terminal = readline.createInterface({
   input: process.stdin,
@@ -19,7 +15,7 @@ const terminal = readline.createInterface({
 
 const messages: ExperimentalMessage[] = [];
 
-async function main() {
+async function main(modelPath: string) {
   const llamacpp = new LLamaCpp(modelPath);
   const model = llamacpp.chat();
 
@@ -47,4 +43,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+main(model).catch(console.error);

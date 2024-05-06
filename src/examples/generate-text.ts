@@ -1,15 +1,12 @@
 import { experimental_generateText } from "ai";
 import { LLamaCpp } from "../index.js";
-import { fileURLToPath } from "url";
-import path from "path";
 
-const modelPath = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../models",
-  "llama-2-7b-chat.Q4_K_M.gguf"
-);
+const model = process.argv[2];
+if (!model) {
+  throw new Error("Missing model path argument");
+}
 
-const llamacpp = new LLamaCpp(modelPath);
+const llamacpp = new LLamaCpp(model);
 
 experimental_generateText({
   model: llamacpp.completion(),
